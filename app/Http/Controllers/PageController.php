@@ -7,19 +7,19 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
-        return view('home');
-    }
+        $search = $request->search;
+        $posts = Post::where('title', 'LIKE', "%{$search}%")
+            ->with('user')
+            ->latest()
+            ->paginate(10);
 
-    public function blog()
-    {
-        $posts = Post::latest()->paginate(10);
-
-        return view('blog', [
+        return view('home', [
             'posts' => $posts
         ]);
     }
+
 
     public function post(Post $post)
     {
